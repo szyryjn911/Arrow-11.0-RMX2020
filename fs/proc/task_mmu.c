@@ -927,20 +927,20 @@ static int show_smap(struct seq_file *m, void *v)
 
 	#ifdef VENDOR_EDIT //yixue.ge@bsp.drv modify for android.bg get pss too slow
 	if (strcmp(current->comm, "android.bg") == 0) {
-		if ((unsigned long)(mss->pss >> (10 + PSS_SHIFT)) > 0) {
+		if ((unsigned long)(mss.pss >> (10 + PSS_SHIFT)) > 0) {
 			seq_printf(m,
 				"Pss:            %8lu kB\n",
-			(	unsigned long)(mss->pss >> (10 + PSS_SHIFT)));
+			(	unsigned long)(mss.pss >> (10 + PSS_SHIFT)));
 		}
-		if ((mss->private_clean >> 10) > 0) {
+		if ((mss.private_clean >> 10) > 0) {
 			seq_printf(m,
 				"Private_Clean:  %8lu kB\n",
-				mss->private_clean >> 10);
+				mss.private_clean >> 10);
 		}
-		if ((mss->private_dirty >> 10) > 0) {
+		if ((mss.private_dirty >> 10) > 0) {
 			seq_printf(m,
 				"Private_Dirty:  %8lu kB\n",
-				mss->private_dirty >> 10);
+				mss.private_dirty >> 10);
 		}
 		m_cache_vma(m, vma);
 		return 0;
@@ -952,17 +952,6 @@ static int show_smap(struct seq_file *m, void *v)
 		seq_puts(m, "Name:           ");
 		seq_print_vma_name(m, vma);
 		seq_putc(m, '\n');
-	}
-
-	if (!rollup_mode) {
-		show_map_vma(m, vma);
-	} else if (last_vma) {
-		show_vma_header_prefix(
-			m, mss->first_vma_start, vma->vm_end, 0, 0, 0, 0);
-		seq_pad(m, ' ');
-		seq_puts(m, "[rollup]\n");
-	} else {
-		ret = SEQ_SKIP;
 	}
 
 	SEQ_PUT_DEC("Size:           ", vma->vm_end - vma->vm_start);
